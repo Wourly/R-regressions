@@ -6,13 +6,17 @@ load('model_input.RData')
 
 plants_linear_model <- lm(Diaspore ~ Longevity, data = plants_final)
 
-png(file="plot.png", width=600, height=600)
+png(file="plot.png", width=600, height=600) #for html results
 dev.set(which = 2)
 
 par(mar = c(5,5,5,5))
 
-with(plants_final,plot(Longevity, Diaspore))
-abline(plants_linear_model)
+with(plants_final,plot(Longevity, Diaspore, pch=16, col="#3cb371", xlab="", ylab=""))
+
+abline(plants_linear_model, cex=1.2, col="#003300")
+
+mtext(side=1, line=3, "Seed bank longevity index", col="#00AA00", font=2,cex=1.5)
+mtext(side=2, line=3, "Diaspore mass (mg)", col="#FF8C00", font=2,cex=1.5)
 
 data <- summary(plants_linear_model)
 
@@ -34,8 +38,8 @@ B1.coefficient <- coefficients[2, 1]
 B1.deviation <- coefficients[2, 2]
 B1.confidence_interval <- get_conf_int(0.95, B1.coefficient, B1.deviation)
 
-abline(a = B0.confidence_interval[1], b = B1.confidence_interval[1], lty = 3, col = "#888888")
-abline(a = B0.confidence_interval[2], b = B1.confidence_interval[2], lty = 3, col = "#888888")
+abline(a = B0.confidence_interval[1], b = B1.confidence_interval[1], lty = 3, col = "#777777")
+abline(a = B0.confidence_interval[2], b = B1.confidence_interval[2], lty = 3, col = "#777777")
 
 dev.copy(which = 4)
 dev.off()
@@ -50,7 +54,7 @@ html_string <-
   <style>
     table
     {
-      border: 1px black solid;
+      border: 0px;
       min-width: 600px;
     }
     td, th
@@ -175,7 +179,7 @@ from dataset <i><a target="_blank" href="https://vincentarelbundock.github.io/Rd
 </html>
 '
 
-html_string <- gsub("[\r\n]", "", html_string)
+#html_string <- gsub("[\r\n]", "", html_string)
 
 html_string <- gsub("__COEFF0", as.character(B0.coefficient), html_string)
 html_string <- gsub("__COEFF1", as.character(B1.coefficient), html_string)
