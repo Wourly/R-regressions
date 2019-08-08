@@ -11,17 +11,18 @@ dev.set(which = 2)
 
 par(mar = c(5,5,5,5))
 
+#creating plot
 with(plants_final,plot(Longevity, Diaspore, pch=16, col="#3cb371", xlab="", ylab=""))
-
 abline(plants_linear_model, cex=1.2, col="#003300")
-
 mtext(side=1, line=3, "Seed bank longevity index", col="#00AA00", font=2,cex=1.5)
 mtext(side=2, line=3, "Diaspore mass (mg)", col="#FF8C00", font=2,cex=1.5)
 
+#uniting data: coefficients, deviations, confidence intervals
 data <- summary(plants_linear_model)
 
 coefficients <- data[["coefficients"]]
 
+#computes confidence interval from estimated coefficient and it's deviation
 get_conf_int <- function (confidence, coefficient, deviation)
 {
   confint_lower_border <- (1 - confidence) / 2
@@ -38,12 +39,14 @@ B1.coefficient <- coefficients[2, 1]
 B1.deviation <- coefficients[2, 2]
 B1.confidence_interval <- get_conf_int(0.95, B1.coefficient, B1.deviation)
 
+#plots for confidence interval borders
 abline(a = B0.confidence_interval[1], b = B1.confidence_interval[1], lty = 3, col = "#777777")
 abline(a = B0.confidence_interval[2], b = B1.confidence_interval[2], lty = 3, col = "#777777")
 
 dev.copy(which = 4)
 dev.off()
 
+#presenting results into html file
 file.create('results.html', showWarnings = 1)
 
 html_string <-
@@ -144,18 +147,6 @@ Correlation between seed mass and seed bank longevity index.
   
   <tr>
     <td>
-      <i>Lower</i>
-    </td>
-    <td>
-      __LLCONF0
-    </td>
-    <td>
-      __LLCONF1
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
       <i>Upper</i>
     </td>
     <td>
@@ -163,6 +154,18 @@ Correlation between seed mass and seed bank longevity index.
     </td>
     <td>
       __ULCONF1
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <i>Lower</i>
+    </td>
+    <td>
+      __LLCONF0
+    </td>
+    <td>
+      __LLCONF1
     </td>
   </tr>
   
@@ -187,11 +190,11 @@ html_string <- gsub("__COEFF1", as.character(B1.coefficient), html_string)
 html_string <- gsub("__DEVI0", as.character(B0.deviation), html_string)
 html_string <- gsub("__DEVI1", as.character(B1.deviation), html_string)
 
-html_string <- gsub("__LLCONF0", as.character(B0.confidence_interval[1]), html_string)
-html_string <- gsub("__LLCONF1", as.character(B1.confidence_interval[1]), html_string)
-
 html_string <- gsub("__ULCONF0", as.character(B0.confidence_interval[2]), html_string)
 html_string <- gsub("__ULCONF1", as.character(B1.confidence_interval[2]), html_string)
+
+html_string <- gsub("__LLCONF0", as.character(B0.confidence_interval[1]), html_string)
+html_string <- gsub("__LLCONF1", as.character(B1.confidence_interval[1]), html_string)
 
 html_file <- file("results.html")
 write(html_string, html_file)

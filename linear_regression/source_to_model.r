@@ -1,5 +1,6 @@
 rm(list=ls())
 
+#data were obtained from https://vincentarelbundock.github.io/Rdatasets/datasets.html
 plants_raw <- read.csv('source_data.csv')
 plants_raw <- data.frame(plants_raw$X, plants_raw$pdias, plants_raw$longindex)
 
