@@ -1,0 +1,54 @@
+const main_table = document.querySelector('table.collapsible.sortable');
+
+main_table.querySelector('thead').outerHTML = '';
+main_table.querySelector('tfoot').outerHTML = '';
+main_table.querySelector('tr.sortbottom').outerHTML = '';
+
+const max_columns = main_table.querySelector('tr').querySelectorAll('td').length;
+
+//looping backward, because column 'indexes' (nth-child) would change during runtime
+for (let i = max_columns; i > 0 + 1; i--)
+{
+	let column = main_table.querySelectorAll('tr td:nth-child(' + String(i) + ')')
+
+	if (![1,2,7].includes(i)) //target columns
+    {	
+		column.forEach(cell => cell.outerHTML = '');
+	}
+	else
+    {	//regex does inside cells: removes all tags and/or extract numeric value from [] brackets and/or removes [] brackets without numeric value and/or removes () brackets
+		column.forEach(cell => cell.innerHTML = cell.innerHTML.replace(/(?:<[^<]*>)|(?:\[([0-9]*)\])|(?:\[[^0-9]*\])|(?:\([^\(]*\))/gi, "$1"))
+	}
+}
+
+const elements = [];
+
+main_table.querySelectorAll('tr')
+	.forEach(row =>
+    {
+		let element = {};
+
+		element['z'] = row.querySelector('td:nth-child(1)').innerHTML;
+		element['symbol'] = row.querySelector('td:nth-child(2)').innerHTML;
+		element['weight'] = row.querySelector('td:nth-child(3)').innerHTML;
+
+		elements.push(element);
+	})
+
+const data_rows = [];
+data_rows[0] = '"symbol", "z", "weight"';
+
+for (let element of elements)
+{
+	let row = [];
+
+	row.push('"' + element['symbol'] + '"');
+	row.push(element['z']);
+	row.push(element['weight']);
+
+	data_rows.push(row.join(','));
+}
+
+const csv = data_rows.join("\n");
+
+copy(csv);

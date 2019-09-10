@@ -1,1 +1,4 @@
-*.Rhistory
+.Rhistory
+.Rdata
+result.html
+plot.png
