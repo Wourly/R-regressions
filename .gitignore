@@ -1,4 +1,6 @@
-.Rhistory
-.Rdata
-result.html
+*.Rhistory
+*.Rdata
+results.html
 plot.png
+.vs/
+.vscode/
